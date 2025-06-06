@@ -1,6 +1,6 @@
 {
-  "buildCommand": null,
-  "installCommand": null,
+  "buildCommand": "echo 'Using pre-built files in /dist'",
+  "installCommand": "echo 'Skipping install'",
   "framework": null,
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
