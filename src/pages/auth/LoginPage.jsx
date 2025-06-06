@@ -1,12 +1,25 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
     rememberMe: false,
   });
+  const [error, setError] = useState("");
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Wenn der Benutzer bereits angemeldet ist, Weiterleitung zur Homepage oder vorherigen Seite
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      const from = location.state?.from?.pathname || "/";
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, location]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -18,8 +31,16 @@ export default function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // In a real app, you would handle authentication here
-    console.log("Login attempt with:", formData);
+    setError("");
+
+    const result = login(formData.username, formData.password);
+
+    if (!result.success) {
+      setError(
+        result.error ||
+          "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut."
+      );
+    }
   };
 
   return (
@@ -29,22 +50,32 @@ export default function LoginPage() {
           Anmelden bei BevArena
         </h1>
         <p className="text-gray-600 mt-2">Geben Sie Ihre Anmeldedaten ein</p>
+        <p className="text-gray-500 text-sm mt-1">
+          Hinweis: Benutzer &quot;bevarena&quot; mit Passwort
+          &quot;bevarena&quot; ist vorkonfiguriert
+        </p>
       </div>
+
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
-            htmlFor="email"
+            htmlFor="username"
             className="block text-gray-700 text-sm font-bold mb-2"
           >
-            E-Mail Adresse
+            Benutzername
           </label>
           <input
-            type="email"
-            id="email"
-            name="email"
+            type="text"
+            id="username"
+            name="username"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            value={formData.email}
+            value={formData.username}
             onChange={handleChange}
             required
           />

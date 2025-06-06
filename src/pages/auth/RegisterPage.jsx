@@ -1,17 +1,28 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    username: "",
     password: "",
     confirmPassword: "",
     agreeTerms: false,
   });
 
   const [errors, setErrors] = useState({});
+  const { register, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // Wenn der Benutzer bereits angemeldet ist, Weiterleitung zur Homepage
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -43,6 +54,10 @@ export default function RegisterPage() {
       newErrors.email = "E-Mail ist ungültig";
     }
 
+    if (!formData.username.trim()) {
+      newErrors.username = "Benutzername ist erforderlich";
+    }
+
     if (!formData.password) {
       newErrors.password = "Passwort ist erforderlich";
     } else if (formData.password.length < 8) {
@@ -65,8 +80,17 @@ export default function RegisterPage() {
     e.preventDefault();
 
     if (validateForm()) {
-      // In a real app, you would handle registration here
-      console.log("Registration data:", formData);
+      const userData = {
+        username: formData.username,
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+      };
+
+      const result = register(userData);
+
+      if (result.success) {
+        navigate("/");
+      }
     }
   };
 
@@ -78,6 +102,10 @@ export default function RegisterPage() {
         </h1>
         <p className="text-gray-600 mt-2">
           Füllen Sie das Formular aus, um ein Konto zu erstellen
+        </p>
+        <p className="text-gray-500 text-sm mt-1">
+          Hinweis: Oder nutzen Sie den vordefinierten Benutzer
+          &quot;bevarena&quot; mit Passwort &quot;bevarena&quot;
         </p>
       </div>
 
@@ -122,6 +150,26 @@ export default function RegisterPage() {
               <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
             )}
           </div>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="username"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Benutzername
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            className={`w-full px-3 py-2 border ${errors.username ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+            value={formData.username}
+            onChange={handleChange}
+          />
+          {errors.username && (
+            <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+          )}
         </div>
 
         <div className="mb-4">

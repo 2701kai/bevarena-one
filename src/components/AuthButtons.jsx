@@ -1,5 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Button from "./Button";
 import Logo from "./Logo";
 
@@ -9,16 +10,20 @@ import Logo from "./Logo";
  * Uses Context7 best practices with React 19
  */
 export default function AuthButtons() {
-  // We could add authentication state here in a real app
-  const isAuthenticated = false;
-  const userName = null;
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   // If user is logged in, show profile button
   if (isAuthenticated) {
     return (
       <div className="flex items-center space-x-3">
         <span className="text-sm text-gray-700 hidden md:block">
-          Willkommen, {userName || "Benutzer"}
+          Willkommen, {user?.name || user?.username || "Benutzer"}
         </span>
         <div className="relative group">
           <Logo size="small" variant="user" linkTo={null} />
@@ -42,7 +47,7 @@ export default function AuthButtons() {
               Nachrichten
             </Link>
             <button
-              onClick={() => console.log("Logout clicked")}
+              onClick={handleLogout}
               className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50"
             >
               Abmelden
