@@ -40,11 +40,17 @@ npm run build
 - [ ] Custom user roles & permissions
 - [ ] Advanced marketplace features
 - [ ] UI/UX polish & branding
-- [ ] API integrations (CRM, ERP, etc.)
+- [ ] **API Integrations:**
+  - CRM (Customer Relationship Management): e.g., Salesforce, HubSpot, Pipedrive
+  - ERP (Enterprise Resource Planning): e.g., SAP, Microsoft Dynamics, Odoo
+  - Other SaaS tools: payment providers, analytics, logistics, or marketing platforms
+  - **CMS (Content Management System) integrations:** Connect to headless CMS solutions (Contentful, Strapi, Sanity, or custom) so web editors, marketers, or non-devs can manage content, news, and product listings directly in the app.
+
+> _Web development is real work: Integrating business systems, automating workflows, and enabling non-dev teams to manage content is where digital value is created._
 
 ## About the Author
 
-This project is developed by the founder of [elita.dev](https://elita.dev/) — a new SaaS agency and innovation lab for rapid, modern product development. If you’re interested in collaboration, SaaS consulting, or want to build your own digital product fast, let’s connect!
+This project is developed by the founder of [elita.dev](https://elita.dev/) — a new SaaS agency and innovation lab for rapid, modern product development. If you're interested in collaboration, SaaS consulting, or want to build your own digital product fast, let's connect!
 
 ---
 
