@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Basic styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* Ensure all elements have box-sizing: border-box */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Context7 integration */
+[data-c7] {
+  display: contents;
+}
