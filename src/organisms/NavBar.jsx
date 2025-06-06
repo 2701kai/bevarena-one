@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import AuthButtons from "../components/AuthButtons";
+import Logo from "../components/Logo";
 
 // Icon components
 const ChevronDownIcon = () => (
@@ -186,6 +188,8 @@ const navData = [
 
 export default function NavBar() {
   const [activeMenu, setActiveMenu] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSubMenuOpen, setMobileSubMenuOpen] = useState(null);
 
   const handleMouseEnter = (index) => {
     setActiveMenu(index);
@@ -199,20 +203,36 @@ export default function NavBar() {
     window.open(url, "_blank");
   };
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+    // Reset submenu when closing main menu
+    if (mobileMenuOpen) {
+      setMobileSubMenuOpen(null);
+    }
+  };
+
+  const toggleMobileSubmenu = (index) => {
+    setMobileSubMenuOpen(mobileSubMenuOpen === index ? null : index);
+  };
+
   return (
     <div className="relative">
+      {/* Top header bar */}
+      <div className="bg-gray-100 py-2 border-b border-gray-200">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <Logo size="medium" linkTo="/" className="mr-2" />
+          </div>
+          <AuthButtons />
+        </div>
+      </div>
+
+      {/* Main navigation */}
       <nav className="bg-blue-700 text-white">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-14">
             <div className="flex items-center">
-              <Link to="/" className="font-bold text-xl flex items-center">
-                <img
-                  src="/images/logo-icon-small.png"
-                  alt="BevArena"
-                  className="h-8 mr-2"
-                />
-                <span>BevArena</span>
-              </Link>
+              <Logo variant="circle" linkTo="/" withText={true} />
             </div>
 
             <div className="hidden md:block">
@@ -226,10 +246,10 @@ export default function NavBar() {
                   >
                     <Link
                       to={item.path}
-                      className={`px-4 py-5 hover:bg-blue-600 flex items-center text-sm font-medium ${activeMenu === index ? "bg-blue-800" : ""}`}
+                      className={`px-4 py-4 hover:bg-blue-600 flex items-center text-sm font-medium ${activeMenu === index ? "bg-blue-800" : ""}`}
                     >
                       {item.label}
-                      {item.megaMenu && <ChevronDownIcon />}
+                      {item.megaMenu && <ChevronDownIcon className="ml-1" />}
                     </Link>
 
                     {/* Mega menu dropdown */}
@@ -279,7 +299,11 @@ export default function NavBar() {
             </div>
 
             <div className="md:hidden">
-              <button className="p-2 rounded-md hover:bg-blue-800 focus:outline-none">
+              <button
+                className="p-2 rounded-md hover:bg-blue-800 focus:outline-none"
+                onClick={toggleMobileMenu}
+                aria-label="Toggle mobile menu"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -296,6 +320,80 @@ export default function NavBar() {
             </div>
           </div>
         </div>
+
+        {/* Mobile menu dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-blue-700">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              {navData.map((item, index) => (
+                <div key={index} className="w-full">
+                  {item.megaMenu ? (
+                    <div className="border-b border-blue-600 pb-2 mb-2">
+                      <button
+                        onClick={() => toggleMobileSubmenu(index)}
+                        className="w-full text-left px-3 py-2 text-white font-medium hover:bg-blue-600 rounded flex justify-between items-center"
+                      >
+                        <span>{item.label}</span>
+                        <span
+                          className={`transition-transform duration-200 ${mobileSubMenuOpen === index ? "rotate-180" : ""}`}
+                        >
+                          <ChevronDownIcon />
+                        </span>
+                      </button>
+
+                      {mobileSubMenuOpen === index && (
+                        <div className="pl-4 mt-1 mb-2 space-y-2 bg-blue-800 rounded">
+                          {item.megaMenu.map((section, sectionIndex) => (
+                            <div key={sectionIndex} className="py-2 px-3">
+                              <h3 className="text-white font-semibold text-sm border-b border-blue-700 pb-1 mb-2">
+                                {section.title}
+                              </h3>
+                              <ul className="space-y-1">
+                                {section.items.map((subItem, subIndex) => (
+                                  <li key={subIndex}>
+                                    {subItem.isExternal ? (
+                                      <button
+                                        onClick={() => {
+                                          handleExternalLink(
+                                            subItem.externalUrl
+                                          );
+                                          setMobileMenuOpen(false);
+                                        }}
+                                        className="text-gray-200 hover:text-white text-sm py-1 pl-2 text-left w-full"
+                                      >
+                                        ▶ {subItem.label}
+                                      </button>
+                                    ) : (
+                                      <Link
+                                        to={subItem.path}
+                                        className="text-gray-200 hover:text-white text-sm py-1 pl-2 block"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                      >
+                                        ▶ {subItem.label}
+                                      </Link>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      className="block px-3 py-2 text-white font-medium hover:bg-blue-600 border-b border-blue-600 pb-2 mb-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
     </div>
   );

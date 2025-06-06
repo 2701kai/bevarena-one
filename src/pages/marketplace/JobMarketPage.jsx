@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const jobs = [
   {
@@ -116,7 +117,10 @@ export default function JobMarketPage() {
             <div className="divide-y divide-gray-100">
               {jobs.map((job) => (
                 <div key={job.id} className="p-4 hover:bg-gray-50">
-                  <a href="#" className="block">
+                  <Link
+                    to={`/marketplace/jobmarket/job/${job.id}`}
+                    className="block"
+                  >
                     <h4 className="font-semibold text-blue-700 hover:underline mb-1">
                       {job.title}
                     </h4>
@@ -147,7 +151,7 @@ export default function JobMarketPage() {
                       </div>
                       <span>{job.date}</span>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               ))}
             </div>
@@ -217,24 +221,36 @@ export default function JobMarketPage() {
                 <h4 className="font-semibold text-gray-700 mb-2">Berufsbild</h4>
                 <ul className="space-y-1">
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      to="/marketplace/jobmarket?profession=cnc"
+                      className="text-blue-600 hover:underline"
+                    >
                       CNC-Fachkraft (124)
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      to="/marketplace/jobmarket?profession=mechatroniker"
+                      className="text-blue-600 hover:underline"
+                    >
                       Mechatroniker (86)
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      to="/marketplace/jobmarket?profession=industriemechaniker"
+                      className="text-blue-600 hover:underline"
+                    >
                       Industriemechaniker (74)
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      to="/marketplace/jobmarket?profession=konstrukteur"
+                      className="text-blue-600 hover:underline"
+                    >
                       Konstrukteur (58)
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -242,24 +258,36 @@ export default function JobMarketPage() {
                 <h4 className="font-semibold text-gray-700 mb-2">Region</h4>
                 <ul className="space-y-1">
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      to="/marketplace/jobmarket?region=bw"
+                      className="text-blue-600 hover:underline"
+                    >
                       Baden-Württemberg (853)
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      to="/marketplace/jobmarket?region=by"
+                      className="text-blue-600 hover:underline"
+                    >
                       Bayern (742)
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      to="/marketplace/jobmarket?region=nrw"
+                      className="text-blue-600 hover:underline"
+                    >
                       Nordrhein-Westfalen (681)
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      to="/marketplace/jobmarket?region=he"
+                      className="text-blue-600 hover:underline"
+                    >
                       Hessen (389)
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

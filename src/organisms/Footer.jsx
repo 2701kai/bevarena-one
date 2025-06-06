@@ -1,147 +1,185 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
-const footerLinks = [
-  {
-    title: "Über BevArena",
-    links: [
-      { label: "Unternehmen", path: "/about/company" },
-      { label: "Impressum", path: "/about/imprint" },
-      { label: "Datenschutz", path: "/about/privacy" },
-      { label: "AGB", path: "/about/terms" },
-    ],
-  },
-  {
-    title: "Kundenservice",
-    links: [
-      { label: "FAQ", path: "/support/faq" },
-      { label: "Kontakt", path: "/support/contact" },
-      { label: "Hilfe", path: "/support/help" },
-    ],
-  },
-  {
-    title: "Business",
-    links: [
-      { label: "Newsroom", path: "/business/newsroom" },
-      { label: "Karriere", path: "/business/career" },
-      { label: "Werbung", path: "/business/advertising" },
-    ],
-  },
-];
+import Logo from "../components/Logo";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 text-gray-600">
-      <div className="container mx-auto px-4 py-8">
-        {/* Featured Image Banner */}
-        <div className="mb-8 relative rounded-lg overflow-hidden">
-          <img
-            src="/images/here_kitty_kitty_Fine_grain_photograph_of_two_blurred_figures_3415fed3-1a6b-4acd-b40d-84849f319864_2.png"
-            alt="Featured Content"
-            className="w-full h-40 object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-700/80 to-transparent flex items-center">
-            <div className="text-white p-6 max-w-lg">
-              <h3 className="text-xl font-bold mb-2">
-                Entdecken Sie die Zukunft der Fertigungsindustrie
-              </h3>
-              <p className="text-blue-100 mb-4">
-                Melden Sie sich für unseren Newsletter an und bleiben Sie immer
-                auf dem neuesten Stand.
-              </p>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Ihre E-Mail-Adresse"
-                  className="px-4 py-2 rounded-l-md w-full focus:outline-none text-gray-800"
-                />
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition">
-                  Anmelden
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-8">
-          <div>
+    <footer className="bg-gray-100 text-gray-600 py-8">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row">
+          <div className="mb-6 md:mb-0 md:w-1/4">
             <div className="mb-4">
-              <Link to="/" className="inline-block">
-                <img
-                  src="/images/bevarena-logo.png"
-                  alt="BevArena Logo"
-                  className="h-10"
-                />
-              </Link>
+              <Logo size="large" linkTo="/" />
             </div>
-            <p className="text-sm mb-4">
+            <p className="text-sm">
               Die Plattform für Getränkeprofis - Austausch, Netzwerk und
               Geschäftschancen.
             </p>
           </div>
 
-          {footerLinks.map((section, i) => (
-            <div key={i}>
-              <h3 className="font-semibold text-gray-800 mb-3">
-                {section.title}
-              </h3>
+          <div className="md:w-3/4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="font-bold mb-4">Über BevArena</h3>
               <ul className="space-y-2">
-                {section.links.map((link, j) => (
-                  <li key={j}>
-                    <Link
-                      to={link.path}
-                      className="hover:text-blue-600 text-sm"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
+                <li>
+                  <Link
+                    to="/unternehmen"
+                    className="text-gray-600 hover:text-blue-700"
+                  >
+                    Unternehmen
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/impressum"
+                    className="text-gray-600 hover:text-blue-700"
+                  >
+                    Impressum
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/datenschutz"
+                    className="text-gray-600 hover:text-blue-700"
+                  >
+                    Datenschutz
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/agb" className="text-gray-600 hover:text-blue-700">
+                    AGB
+                  </Link>
+                </li>
               </ul>
             </div>
-          ))}
 
-          <div>
-            <h3 className="font-semibold text-gray-800 mb-3">Folgen Sie uns</h3>
-            <div className="flex space-x-3">
-              <a href="#" className="text-gray-500 hover:text-blue-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
-                </svg>
-              </a>
-              <a href="#" className="text-gray-500 hover:text-blue-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z" />
-                </svg>
-              </a>
-              <a href="#" className="text-gray-500 hover:text-blue-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
-                </svg>
-              </a>
+            <div>
+              <h3 className="font-bold mb-4">Kundenservice</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/faq" className="text-gray-600 hover:text-blue-700">
+                    FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/kontakt"
+                    className="text-gray-600 hover:text-blue-700"
+                  >
+                    Kontakt
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/hilfe"
+                    className="text-gray-600 hover:text-blue-700"
+                  >
+                    Hilfe
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-bold mb-4">Business</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    to="/newsroom"
+                    className="text-gray-600 hover:text-blue-700"
+                  >
+                    Newsroom
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/karriere"
+                    className="text-gray-600 hover:text-blue-700"
+                  >
+                    Karriere
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/werbung"
+                    className="text-gray-600 hover:text-blue-700"
+                  >
+                    Werbung
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-200 pt-6 text-center text-sm">
-          &copy; {new Date().getFullYear()} BevArena — All rights reserved.
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="flex flex-col md:flex-row md:justify-between">
+            <div className="mb-4 md:mb-0">
+              <h3 className="font-bold mb-2">Folgen Sie uns</h3>
+              <div className="flex space-x-4">
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-blue-600"
+                  aria-label="Facebook"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-blue-400"
+                  aria-label="Twitter"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                  </svg>
+                </a>
+                <a
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-gray-900"
+                  aria-label="GitHub"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm">© 2025 BevArena — All rights reserved.</p>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

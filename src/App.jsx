@@ -6,7 +6,7 @@
 //   useUser,
 // } from "@clerk/clerk-react";
 import React from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import MediaPage from "./pages/MediaPage";
 import OrderMatchPage from "./pages/OrderMatchPage";
@@ -21,7 +21,11 @@ import JobMarketPage from "./pages/marketplace/JobMarketPage";
 import SocialMediaRankingPage from "./pages/marketplace/SocialMediaRankingPage";
 import SupplierPage from "./pages/marketplace/SupplierPage";
 // OrderMatch routes
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import OrderMatchWelcomePage from "./pages/ordermatch/WelcomePage";
+// Error handling
+import ErrorPage from "./pages/ErrorPage";
 
 // const ProtectedRoute = ({ children }) => (
 //   <>
@@ -55,39 +59,73 @@ import OrderMatchWelcomePage from "./pages/ordermatch/WelcomePage";
 //   children: PropTypes.node.isRequired,
 // };
 
-export default function App() {
-  return (
-    // <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
-    <Router
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/media" element={<MediaPage />} />
-          <Route path="/ordermatch" element={<OrderMatchPage />} />
-          <Route
-            path="/ordermatch/welcome"
-            element={<OrderMatchWelcomePage />}
-          />
-          <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/wiki" element={<WikiPage />} />
-          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "media",
+        element: <MediaPage />,
+      },
+      {
+        path: "ordermatch",
+        element: <OrderMatchPage />,
+      },
+      {
+        path: "ordermatch/welcome",
+        element: <OrderMatchWelcomePage />,
+      },
+      {
+        path: "pricing",
+        element: <PricingPage />,
+      },
+      {
+        path: "wiki",
+        element: <WikiPage />,
+      },
+      {
+        path: "unauthorized",
+        element: <UnauthorizedPage />,
+      },
+      {
+        path: "marketplace/emagazines",
+        element: <EmagazinesPage />,
+      },
+      {
+        path: "marketplace/supplier",
+        element: <SupplierPage />,
+      },
+      {
+        path: "marketplace/socialmediaranking",
+        element: <SocialMediaRankingPage />,
+      },
+      {
+        path: "marketplace/jobmarket",
+        element: <JobMarketPage />,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
+      },
+      // 404 route - must be last
+      {
+        path: "*",
+        element: <ErrorPage />,
+      },
+    ],
+  },
+]);
 
-          {/* Marketplace routes */}
-          <Route path="/marketplace/emagazines" element={<EmagazinesPage />} />
-          <Route path="/marketplace/supplier" element={<SupplierPage />} />
-          <Route
-            path="/marketplace/socialmediaranking"
-            element={<SocialMediaRankingPage />}
-          />
-          <Route path="/marketplace/jobmarket" element={<JobMarketPage />} />
-        </Routes>
-      </Layout>
-    </Router>
-    // </ClerkProvider>
-  );
+export default function App() {
+  return <RouterProvider router={router} />;
 }
