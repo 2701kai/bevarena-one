@@ -61,6 +61,26 @@ npm run dev
 npm run build
 ```
 
+## Developer Tools
+
+BevArena includes powerful developer tools that are automatically available in development mode but never included in production builds:
+
+### Context7 AI Integration
+
+Context7 is automatically initialized in all BevArena projects to assist developers:
+
+- **Access via Console**:
+  - Type `useContext7("react")` for quick library help
+  - Type `window.__C7.getLibraryHelp("react")` for more advanced options
+- **Keyboard Shortcuts**:
+  - Press `Ctrl+Shift+Numpad8` to toggle the developer panel
+  - Press `Alt+7` to quickly use Context7 (alias for "Use context7")
+- **Import Helpers**: Use `import { kaiTools } from "../utils/devtools/kai-helper";` in your components
+
+For detailed documentation, see [Context7 Usage Guide](./dev-notes/context7-usage.md).
+
+> **Note**: All developer tools are automatically removed from client-facing code during the build process.
+
 ## Test Login
 
 - **Username:** `bevarena`
