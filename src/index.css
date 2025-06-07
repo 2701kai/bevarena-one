@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: Inter, system-ui, sans-serif;
+}
+
 /* Basic styles */
 body {
   margin: 0;
   padding: 0;
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
 
 /* Ensure all elements have box-sizing: border-box */
