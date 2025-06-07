@@ -35,55 +35,6 @@ import OrderMatchWelcomePage from "./pages/ordermatch/WelcomePage";
 import PropTypes from "prop-types";
 import ErrorPage from "./pages/ErrorPage";
 
-// DEV ONLY: Use a dummy kaiTools object that will be replaced in development
-const kaiTools = {
-  isAvailable: () => false,
-  togglePanel: () => console.debug("Dev tools not available"),
-};
-
-// Initialize developer tools in development mode
-if (import.meta.env.DEV) {
-  // This will be dynamically loaded only in development
-  import("./utils/devtools/kai-helper.js")
-    .then((module) => {
-      // Replace the dummy kaiTools with the real one
-      Object.assign(kaiTools, module.kaiTools);
-      console.debug("Developer tools helper loaded");
-    })
-    .catch((err) => {
-      console.debug("Developer tools helper not available:", err);
-    });
-}
-
-// Protected Route component with improved redirect handling
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
-  const { storeRedirectPath } = useRoutes();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Only redirect when not loading and not authenticated
-    if (!loading && !isAuthenticated) {
-      // Store current path for redirect after login
-      storeRedirectPath(location.pathname);
-      // Navigate to login
-      navigate("/login", { replace: true });
-    }
-  }, [
-    isAuthenticated,
-    loading,
-    location.pathname,
-    navigate,
-    storeRedirectPath,
-  ]);
-
-  if (loading) {
-    return <div className="p-8 text-center">Lade...</div>;
-  }
-
-  // If authenticated, render children
-  return isAuthenticated ? children : null;
 };
 
 ProtectedRoute.propTypes = {
@@ -281,8 +232,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-// DEV ONLY: Initialize developer tools
-if (import.meta.env.DEV && kaiTools) {
   // Log that developer tools are available
   console.debug("[DEV] KAI Tools available:", kaiTools.isAvailable());
 
