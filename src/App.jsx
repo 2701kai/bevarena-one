@@ -5,14 +5,15 @@
 //   SignedOut,
 //   useUser,
 // } from "@clerk/clerk-react";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   createBrowserRouter,
-  Navigate,
   RouterProvider,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { RouteProvider, useRoutes } from "./context/RouteContext";
 import HomePage from "./pages/HomePage";
 import MediaPage from "./pages/MediaPage";
 import OrderMatchPage from "./pages/OrderMatchPage";
@@ -34,21 +35,35 @@ import OrderMatchWelcomePage from "./pages/ordermatch/WelcomePage";
 import PropTypes from "prop-types";
 import ErrorPage from "./pages/ErrorPage";
 
-// Geschützte Route-Komponente
+// Protected Route component with improved redirect handling
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
+  const { storeRedirectPath } = useRoutes();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Only redirect when not loading and not authenticated
+    if (!loading && !isAuthenticated) {
+      // Store current path for redirect after login
+      storeRedirectPath(location.pathname);
+      // Navigate to login
+      navigate("/login", { replace: true });
+    }
+  }, [
+    isAuthenticated,
+    loading,
+    location.pathname,
+    navigate,
+    storeRedirectPath,
+  ]);
 
   if (loading) {
     return <div className="p-8 text-center">Lade...</div>;
   }
 
-  if (!isAuthenticated) {
-    // Speichere den aktuellen Pfad, damit der Benutzer nach dem Login zurückgeleitet werden kann
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return children;
+  // If authenticated, render children
+  return isAuthenticated ? children : null;
 };
 
 ProtectedRoute.propTypes = {
@@ -74,6 +89,30 @@ ProtectedRoute.propTypes = {
 //   children: PropTypes.node.isRequired,
 // };
 
+// Coming Soon placeholder for routes not yet implemented
+const ComingSoonRoute = () => {
+  return (
+    <div className="max-w-4xl mx-auto my-12 p-8 bg-white rounded-lg shadow-lg">
+      <div className="flex flex-col items-center text-center">
+        <div className="bg-yellow-500 text-white text-xl font-bold w-16 h-16 rounded-full flex items-center justify-center mb-4">
+          !
+        </div>
+        <h1 className="text-3xl font-bold mb-4">Coming Soon!</h1>
+        <p className="text-gray-600 mb-6 max-w-md">
+          Diese Funktion steht bald zur Verfügung. Wir arbeiten derzeit daran,
+          sie für Sie bereitzustellen.
+        </p>
+        <a
+          href="/"
+          className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Zurück zur Startseite
+        </a>
+      </div>
+    </div>
+  );
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -84,10 +123,20 @@ const router = createBrowserRouter([
         index: true,
         element: <HomePage />,
       },
+      // Media routes
       {
         path: "media",
         element: <MediaPage />,
       },
+      {
+        path: "media/videos",
+        element: <MediaPage />,
+      },
+      {
+        path: "media/webinars",
+        element: <MediaPage />,
+      },
+      // Ordermatch routes
       {
         path: "ordermatch",
         element: (
@@ -104,6 +153,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      // Static pages
       {
         path: "pricing",
         element: <PricingPage />,
@@ -116,6 +166,7 @@ const router = createBrowserRouter([
         path: "unauthorized",
         element: <UnauthorizedPage />,
       },
+      // Marketplace routes
       {
         path: "marketplace/emagazines",
         element: (
@@ -148,6 +199,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      // User profile routes
       {
         path: "profile",
         element: (
@@ -181,6 +233,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      // Auth routes
       {
         path: "login",
         element: <LoginPage />,
@@ -188,6 +241,15 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <RegisterPage />,
+      },
+      // Coming Soon routes
+      {
+        path: "forum/*",
+        element: <ComingSoonRoute />,
+      },
+      {
+        path: "themenkanäle/*",
+        element: <ComingSoonRoute />,
       },
       // 404 route - must be last
       {
@@ -201,7 +263,9 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <RouteProvider>
+        <RouterProvider router={router} />
+      </RouteProvider>
     </AuthProvider>
   );
 }
