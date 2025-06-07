@@ -7,6 +7,22 @@
 
 A next-generation, full-stack platform for the beverage industry, powered by the latest web technologies. Engineered for fast prototyping, SaaS scalability, and practical business solutions.
 
+## Repository Structure
+
+This project uses a dual repository approach:
+
+- **Development Repository (Private)**: https://github.com/2701kai/dev-bevarena-one
+
+  - Contains all development code, branches, and artifacts
+  - For development team use only
+
+- **Client Repository (Public)**: https://github.com/2701kai/bevarena-one
+  - Clean codebase for client viewing
+  - Single branch only
+  - No development artifacts
+
+For more details on the repository workflow, see [Documentation](../../doc/repository-workflow.md).
+
 ## Why BevArena?
 
 - **For Innovators:** Rapidly prototype and launch new digital products for the beverage sector.
@@ -112,4 +128,4 @@ _Inspired by the best of the beverage and SaaS world. Built for speed, scale, an
 - **Purpose Beyond Profit:** Agency revenue fuels pro bono, high-impact tech for the greater good.
 - **No Fuzz, Just Results:** We remove technical barriers so our clients (and investors) can focus on what matters.
 
-_We’re open to strategic partnerships and investment to accelerate our mission.<br>If you want to be part of the next wave of SaaS and digital enablement, let’s talk._
+_We're open to strategic partnerships and investment to accelerate our mission.<br>If you want to be part of the next wave of SaaS and digital enablement, let's talk._
