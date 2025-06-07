@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useRoutes } from "../../context/RouteContext";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -10,16 +11,25 @@ export default function LoginPage() {
   });
   const [error, setError] = useState("");
   const { login, isAuthenticated } = useAuth();
+  const { getRedirectPath } = useRoutes();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Wenn der Benutzer bereits angemeldet ist, Weiterleitung zur Homepage oder vorherigen Seite
-  React.useEffect(() => {
+  // Redirect when authenticated
+  useEffect(() => {
     if (isAuthenticated) {
-      const from = location.state?.from?.pathname || "/";
-      navigate(from, { replace: true });
+      // First check for stored redirect in RouteContext
+      const redirectPath = getRedirectPath();
+
+      // If no stored redirect, check location state
+      if (redirectPath === "/" && location.state?.from) {
+        navigate(location.state.from.pathname, { replace: true });
+      } else {
+        // Use the stored redirect path
+        navigate(redirectPath, { replace: true });
+      }
     }
-  }, [isAuthenticated, navigate, location]);
+  }, [isAuthenticated, navigate, location, getRedirectPath]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -116,7 +126,6 @@ export default function LoginPage() {
               Angemeldet bleiben
             </label>
           </div>
-
           <div className="text-sm">
             <Link
               to="/forgot-password"
@@ -127,23 +136,20 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div>
+        <div className="mb-4">
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           >
             Anmelden
           </button>
         </div>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className="text-center">
         <p className="text-sm text-gray-600">
-          Noch kein Konto?{" "}
-          <Link
-            to="/register"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
+          Sie haben noch kein Konto?{" "}
+          <Link to="/register" className="text-blue-600 hover:text-blue-800">
             Jetzt registrieren
           </Link>
         </p>
