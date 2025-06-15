@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "defaultLibraries": [
+    "/react/react",
+    "/vitejs/vite",
+    "/tailwindlabs/tailwindcss"
+  ],
+  "keyboardShortcuts": {
+    "togglePanel": ["Alt+D", "Alt+7"]
+  }
+}
