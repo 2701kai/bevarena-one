@@ -18,6 +18,7 @@ echo "- Removed context7.json files"
 # Remove Context7 files and references
 find . -path "*/utils/devtools/*" -type f -delete
 find . -path "*/scripts/setup-devtools.js" -type f -delete
+find . -path "*/components/dev/*" -type f -delete
 rm -f src/context/context7.js 2>/dev/null || true
 echo "- Removed Context7 files and developer tools"
 
@@ -28,6 +29,7 @@ if [ -d "dev-notes" ]; then
 fi
 
 # Remove Claude markers and Cursor artifacts
+# Fix the find command to properly handle multiple file extensions
 find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" -o -name "*.css" -o -name "*.html" \) | while read file; do
     # Skip node_modules
     if [[ $file == *"node_modules"* ]]; then
@@ -56,8 +58,11 @@ find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx"
     # Remove Context7 related code
     sed -i '/import.*from.*context7/d' "$file"
     sed -i '/import.*from.*\/utils\/devtools/d' "$file"
+    sed -i '/import.*from.*\/components\/dev/d' "$file"
     sed -i 's/window.__C7/window.__REMOVED/g' "$file"
+    sed -i 's/window.__context7/window.__REMOVED/g' "$file"
     sed -i 's/console.debug("Development tools initialized")/\/\/ Development code removed/g' "$file"
+    sed -i 's/console.debug("\[DEV\].*")/\/\/ Development code removed/g' "$file"
     sed -i '/const kaiTools =/,/: null;/d' "$file"
     sed -i '/\/\/ DEV ONLY:/d' "$file"
 
@@ -69,10 +74,16 @@ find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx"
     # Remove DeveloperPanel references in JSX
     sed -i '/{\/\* Render the DeveloperPanel/,/}\)}/d' "$file"
     sed -i '/<React.Suspense.*DeveloperPanel/,/<\/React.Suspense>/d' "$file"
+    sed -i '/{import.meta.env.DEV && <DevPanelWrapper \/>/d' "$file"
 
     # Remove the entire Context7 initialization block from main.jsx
     if [[ $file == *"main.jsx" ]]; then
         sed -i '/\/\/ Silently initialize developer tools/,/^}/d' "$file"
+    fi
+
+    # Clean DevPanelWrapper function from Layout.jsx
+    if [[ $file == *"Layout.jsx" ]]; then
+        sed -i '/function DevPanelWrapper/,/^}/d' "$file"
     fi
 done
 
@@ -97,6 +108,10 @@ if [ -f "vite.config.js" ]; then
     # Remove imports for fs and path (only used by the Context7 plugin)
     sed -i '/import fs from "fs";/d' "vite.config.js"
     sed -i '/import path from "path";/d' "vite.config.js"
+    # Remove transformIndexHtml function that adds setup-devtools.js
+    sed -i '/transformIndexHtml: /,/},/d' "vite.config.js"
+    # Remove optimizeDeps section that includes setup-devtools.js
+    sed -i '/optimizeDeps: {/,/},/d' "vite.config.js"
     # Clean up trailing commas
     sed -i 's/,\s*\]/]/' "vite.config.js"
 fi
