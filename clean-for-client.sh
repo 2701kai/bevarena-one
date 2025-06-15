@@ -98,7 +98,7 @@ if [ -f "vite.config.js" ]; then
     sed -i '/import fs from "fs";/d' "vite.config.js"
     sed -i '/import path from "path";/d' "vite.config.js"
     # Clean up trailing commas
-    sed -i 's/,\s*]/]/' "vite.config.js"
+    sed -i 's/,\s*\]/]/' "vite.config.js"
 fi
 
 # Clean up package.json
@@ -110,7 +110,7 @@ if [ -f "package.json" ]; then
     sed -i '/"@upstash\/context7-mcp": .*,\?/d' "package.json"
     sed -i '/"context7": .*,\?/d' "package.json"
     # Clean up trailing commas
-    sed -i 's/,\s*}/}/' "package.json"
+    sed -i 's/,\s*\}/}/' "package.json"
 fi
 
 echo "✨ Repository cleaned for client viewing!"
