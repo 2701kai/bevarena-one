@@ -3,11 +3,34 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+// Custom plugin to inject Context7 initialization
+const devToolsPlugin = {
+  name: "context7-dev-tools",
+  transformIndexHtml(html) {
+    if (process.env.NODE_ENV === "production") return html;
+
+    // Add script to initialize Context7
+    return html.replace(
+      "</head>",
+      `<script>
+        // Initialize Context7 if available
+        window.__context7_config = {
+          enabled: true,
+          keyboardShortcuts: {
+            togglePanel: ["Alt+D", "Alt+7"]
+          }
+        };
+      </script>
+      </head>`
+    );
+  },
+};
+
 export default defineConfig(({ mode }) => {
   const isDev = mode === "development";
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), isDev && devToolsPlugin].filter(Boolean),
     server: {
       port: 5173,
     },
@@ -19,7 +42,8 @@ export default defineConfig(({ mode }) => {
       sourcemap: false,
       minify: true,
     },
-    // Include the setup-devtools.js script in development mode
-    // Add the setup-devtools.js script to the HTML in development mode
+    optimizeDeps: {
+      include: isDev ? ["./src/context/context7.js"] : [],
+    },
   };
 });
