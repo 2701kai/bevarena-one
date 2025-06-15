@@ -8,11 +8,8 @@
     "preview": "vite preview",
     "test": "jest",
     "lint": "eslint .",
-<<<<<<< HEAD
     "format": "prettier --write .",
-=======
-    "format": "prettier --write ."
->>>>>>> main
+    "postinstall": "node scripts/setup-devtools.js"
   },
   "type": "module",
   "dependencies": {

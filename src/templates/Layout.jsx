@@ -11,6 +11,9 @@ import NavBar from "../organisms/NavBar";
 
 // Import the DeveloperPanel only in development mode
 // This import will be automatically removed in production builds
+const DeveloperPanel = import.meta.env.DEV
+  ? React.lazy(() => import("../components/dev/DeveloperPanel"))
+  : () => null;
 
 export default function Layout() {
   return (
@@ -49,6 +52,7 @@ export default function Layout() {
       <Footer />
 
       {/* Render the DeveloperPanel in development mode only */}
+      {import.meta.env.DEV && (
         <React.Suspense fallback={null}>
           <DeveloperPanel />
         </React.Suspense>
