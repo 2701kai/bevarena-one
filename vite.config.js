@@ -9,17 +9,27 @@ const devToolsPlugin = {
   transformIndexHtml(html) {
     if (process.env.NODE_ENV === "production") return html;
 
-    // Add script to initialize Context7
+    // Add script to initialize Context7 and keyboard shortcuts
     return html.replace(
       "</head>",
       `<script>
-        // Initialize Context7 if available
-        window.__context7_config = {
-          enabled: true,
-          keyboardShortcuts: {
-            togglePanel: ["Alt+D", "Alt+7"]
+        // Initialize Context7 keyboard shortcuts directly
+        document.addEventListener("keydown", function(e) {
+          // Alt+D shortcut
+          if (e.altKey && (e.key === "d" || e.key === "D" || e.keyCode === 68)) {
+            e.preventDefault();
+            console.log("Alt+D pressed!");
+            window.dispatchEvent(new CustomEvent("c7:toggle-panel"));
           }
-        };
+          
+          // Alt+7 shortcut
+          if (e.altKey && (e.key === "7" || e.keyCode === 55 || e.which === 55 || 
+                         (e.key === "Numpad7" || e.keyCode === 103))) {
+            e.preventDefault();
+            console.log("Alt+7 pressed!");
+            window.dispatchEvent(new CustomEvent("c7:toggle-panel"));
+          }
+        });
       </script>
       </head>`
     );
@@ -39,11 +49,8 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: "dist",
-      sourcemap: false,
-      minify: true,
-    },
-    optimizeDeps: {
-      include: isDev ? ["./src/context/context7.js"] : [],
+      sourcemap: isDev,
+      minify: !isDev,
     },
   };
 });

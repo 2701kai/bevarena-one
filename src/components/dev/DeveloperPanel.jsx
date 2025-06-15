@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { togglePanel, useContext7Available } from "../../context/context7";
 
 /**
  * DeveloperPanel component
@@ -8,58 +7,31 @@ import { togglePanel, useContext7Available } from "../../context/context7";
  */
 const DeveloperPanel = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const context7Available = useContext7Available();
+  const [context7Available, setContext7Available] = useState(false);
 
   useEffect(() => {
+    // Check if Context7 is available
+    setContext7Available(typeof window.__C7 !== "undefined");
+
     // Toggle panel visibility
     const handleTogglePanel = () => {
+      console.log("[DEV] Toggle panel event received");
       setIsVisible((prev) => !prev);
-
-      // If Context7 is available, toggle its panel too
-      if (context7Available) {
-        togglePanel();
-      }
     };
 
     // Listen for custom toggle event
     window.addEventListener("c7:toggle-panel", handleTogglePanel);
 
-    // Keyboard shortcut: Alt+D or Alt+7 to toggle panel
-    const handleKeyDown = (e) => {
-      // Alt+D shortcut
-      if (e.altKey && (e.key === "d" || e.key === "D" || e.keyCode === 68)) {
-        e.preventDefault();
-        handleTogglePanel();
-      }
-
-      // Alt+7 shortcut (including numpad)
-      if (
-        e.altKey &&
-        (e.key === "7" ||
-          e.keyCode === 55 ||
-          e.which === 55 ||
-          e.key === "Numpad7" ||
-          e.keyCode === 103)
-      ) {
-        e.preventDefault();
-        handleTogglePanel();
-      }
-    };
-
-    // Add event listeners
-    document.addEventListener("keydown", handleKeyDown);
-
     // Log that the panel is ready
-    console.debug(
+    console.log(
       "[DEV] Developer panel initialized. Press Alt+D or Alt+7 to toggle."
     );
 
     // Cleanup
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("c7:toggle-panel", handleTogglePanel);
     };
-  }, [context7Available]);
+  }, []);
 
   // Don't render anything if not visible
   if (!isVisible) return null;
@@ -70,7 +42,14 @@ const DeveloperPanel = () => {
         <h3 className="text-sm font-semibold">Developer Tools</h3>
         <div className="flex space-x-2">
           <button
-            onClick={() => togglePanel()}
+            onClick={() => {
+              if (
+                window.__C7 &&
+                typeof window.__C7.togglePanel === "function"
+              ) {
+                window.__C7.togglePanel();
+              }
+            }}
             className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded"
             title="Toggle Context7 Panel"
           >
