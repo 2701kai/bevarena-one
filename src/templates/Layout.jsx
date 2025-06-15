@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Footer from "../organisms/Footer";
 import NavBar from "../organisms/NavBar";
@@ -9,11 +9,12 @@ import NavBar from "../organisms/NavBar";
  * Also includes the DeveloperPanel in development mode only
  */
 
-// Import the DeveloperPanel only in development mode
-// This import will be automatically removed in production builds
-const DeveloperPanel = import.meta.env.DEV
-  ? React.lazy(() => import("../components/dev/DeveloperPanel"))
-  : () => null;
+// In development mode, we'll dynamically import the DeveloperPanel
+// This approach avoids issues with React.lazy
+function DevPanelWrapper() {
+  const [DevPanel, setDevPanel] = useState(null);
+
+  useEffect(() => {
 
 export default function Layout() {
   return (
@@ -52,11 +53,6 @@ export default function Layout() {
       <Footer />
 
       {/* Render the DeveloperPanel in development mode only */}
-      {import.meta.env.DEV && (
-        <React.Suspense fallback={null}>
-          <DeveloperPanel />
-        </React.Suspense>
-      )}
     </div>
   );
 }

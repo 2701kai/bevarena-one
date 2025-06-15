@@ -12,8 +12,8 @@ const DeveloperPanel = () => {
   useEffect(() => {
     // Check if Context7 is available
     const checkC7 = () => {
-      if (window.__C7 && typeof window.__C7.isAvailable === "function") {
-        setC7Available(window.__C7.isAvailable());
+      if (window.__REMOVED && typeof window.__REMOVED.isAvailable === "function") {
+        setC7Available(window.__REMOVED.isAvailable());
       }
     };
 
@@ -107,7 +107,7 @@ const DeveloperPanel = () => {
           <div className="flex flex-col space-y-2">
             <button
               onClick={() =>
-                window.__C7
+                window.__REMOVED
                   ?.getLibraryHelp("react")
                   .then((docs) => console.log("React Docs:", docs))
               }
@@ -118,7 +118,7 @@ const DeveloperPanel = () => {
             </button>
             <button
               onClick={() =>
-                window.__C7
+                window.__REMOVED
                   ?.getLibraryHelp("tailwindcss")
                   .then((docs) => console.log("Tailwind Docs:", docs))
               }

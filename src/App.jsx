@@ -35,55 +35,6 @@ import OrderMatchWelcomePage from "./pages/ordermatch/WelcomePage";
 import PropTypes from "prop-types";
 import ErrorPage from "./pages/ErrorPage";
 
-// DEV ONLY: Use a dummy kaiTools object that will be replaced in development
-const kaiTools = {
-  isAvailable: () => false,
-  togglePanel: () => console.debug("Dev tools not available"),
-};
-
-// Initialize developer tools in development mode
-if (import.meta.env.DEV) {
-  // This will be dynamically loaded only in development
-  import("./utils/devtools/kai-helper.js")
-    .then((module) => {
-      // Replace the dummy kaiTools with the real one
-      Object.assign(kaiTools, module.kaiTools);
-      console.debug("Developer tools helper loaded");
-    })
-    .catch((err) => {
-      console.debug("Developer tools helper not available:", err);
-    });
-}
-
-// Protected Route component with improved redirect handling
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
-  const { storeRedirectPath } = useRoutes();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Only redirect when not loading and not authenticated
-    if (!loading && !isAuthenticated) {
-      // Store current path for redirect after login
-      storeRedirectPath(location.pathname);
-      // Navigate to login
-      navigate("/login", { replace: true });
-    }
-  }, [
-    isAuthenticated,
-    loading,
-    location.pathname,
-    navigate,
-    storeRedirectPath,
-  ]);
-
-  if (loading) {
-    return <div className="p-8 text-center">Lade...</div>;
-  }
-
-  // If authenticated, render children
-  return isAuthenticated ? children : null;
 };
 
 ProtectedRoute.propTypes = {
@@ -133,156 +84,161 @@ const ComingSoonRoute = () => {
   );
 };
 
-// Create the router configuration
-// This could be moved to a separate file for better organization
-const router = createBrowserRouter([
+// Create the router configuration with future flags
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Layout />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          index: true,
+          element: <HomePage />,
+        },
+        // Media routes
+        {
+          path: "media",
+          element: <MediaPage />,
+        },
+        {
+          path: "media/videos",
+          element: <MediaPage />,
+        },
+        {
+          path: "media/webinars",
+          element: <MediaPage />,
+        },
+        // Ordermatch routes
+        {
+          path: "ordermatch",
+          element: (
+            <ProtectedRoute>
+              <OrderMatchPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "ordermatch/welcome",
+          element: (
+            <ProtectedRoute>
+              <OrderMatchWelcomePage />
+            </ProtectedRoute>
+          ),
+        },
+        // Static pages
+        {
+          path: "pricing",
+          element: <PricingPage />,
+        },
+        {
+          path: "wiki",
+          element: <WikiPage />,
+        },
+        {
+          path: "unauthorized",
+          element: <UnauthorizedPage />,
+        },
+        // Marketplace routes
+        {
+          path: "marketplace/emagazines",
+          element: (
+            <ProtectedRoute>
+              <EmagazinesPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "marketplace/supplier",
+          element: (
+            <ProtectedRoute>
+              <SupplierPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "marketplace/socialmediaranking",
+          element: (
+            <ProtectedRoute>
+              <SocialMediaRankingPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "marketplace/jobmarket",
+          element: (
+            <ProtectedRoute>
+              <JobMarketPage />
+            </ProtectedRoute>
+          ),
+        },
+        // User profile routes
+        {
+          path: "profile",
+          element: (
+            <ProtectedRoute>
+              <div className="p-8">
+                <h1 className="text-2xl font-bold mb-4">Mein Profil</h1>
+                <p>Hier sind deine Profil-Informationen.</p>
+              </div>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "settings",
+          element: (
+            <ProtectedRoute>
+              <div className="p-8">
+                <h1 className="text-2xl font-bold mb-4">Einstellungen</h1>
+                <p>Hier kannst du deine Einstellungen ändern.</p>
+              </div>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "messages",
+          element: (
+            <ProtectedRoute>
+              <div className="p-8">
+                <h1 className="text-2xl font-bold mb-4">Nachrichten</h1>
+                <p>Hier findest du deine Nachrichten.</p>
+              </div>
+            </ProtectedRoute>
+          ),
+        },
+        // Auth routes
+        {
+          path: "login",
+          element: <LoginPage />,
+        },
+        {
+          path: "register",
+          element: <RegisterPage />,
+        },
+        // Coming Soon routes
+        {
+          path: "forum/*",
+          element: <ComingSoonRoute />,
+        },
+        {
+          path: "companies/*",
+          element: <ComingSoonRoute />,
+        },
+        {
+          path: "showcase/*",
+          element: <ComingSoonRoute />,
+        },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <Layout />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        index: true,
-        element: <HomePage />,
-      },
-      // Media routes
-      {
-        path: "media",
-        element: <MediaPage />,
-      },
-      {
-        path: "media/videos",
-        element: <MediaPage />,
-      },
-      {
-        path: "media/webinars",
-        element: <MediaPage />,
-      },
-      // Ordermatch routes
-      {
-        path: "ordermatch",
-        element: (
-          <ProtectedRoute>
-            <OrderMatchPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "ordermatch/welcome",
-        element: (
-          <ProtectedRoute>
-            <OrderMatchWelcomePage />
-          </ProtectedRoute>
-        ),
-      },
-      // Static pages
-      {
-        path: "pricing",
-        element: <PricingPage />,
-      },
-      {
-        path: "wiki",
-        element: <WikiPage />,
-      },
-      {
-        path: "unauthorized",
-        element: <UnauthorizedPage />,
-      },
-      // Marketplace routes
-      {
-        path: "marketplace/emagazines",
-        element: (
-          <ProtectedRoute>
-            <EmagazinesPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "marketplace/supplier",
-        element: (
-          <ProtectedRoute>
-            <SupplierPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "marketplace/socialmediaranking",
-        element: (
-          <ProtectedRoute>
-            <SocialMediaRankingPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "marketplace/jobmarket",
-        element: (
-          <ProtectedRoute>
-            <JobMarketPage />
-          </ProtectedRoute>
-        ),
-      },
-      // User profile routes
-      {
-        path: "profile",
-        element: (
-          <ProtectedRoute>
-            <div className="p-8">
-              <h1 className="text-2xl font-bold mb-4">Mein Profil</h1>
-              <p>Hier sind deine Profil-Informationen.</p>
-            </div>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings",
-        element: (
-          <ProtectedRoute>
-            <div className="p-8">
-              <h1 className="text-2xl font-bold mb-4">Einstellungen</h1>
-              <p>Hier kannst du deine Einstellungen ändern.</p>
-            </div>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "messages",
-        element: (
-          <ProtectedRoute>
-            <div className="p-8">
-              <h1 className="text-2xl font-bold mb-4">Nachrichten</h1>
-              <p>Hier findest du deine Nachrichten.</p>
-            </div>
-          </ProtectedRoute>
-        ),
-      },
-      // Auth routes
-      {
-        path: "login",
-        element: <LoginPage />,
-      },
-      {
-        path: "register",
-        element: <RegisterPage />,
-      },
-      // Coming Soon routes
-      {
-        path: "forum/*",
-        element: <ComingSoonRoute />,
-      },
-      {
-        path: "companies/*",
-        element: <ComingSoonRoute />,
-      },
-      {
-        path: "showcase/*",
-        element: <ComingSoonRoute />,
-      },
-    ],
-  },
-]);
+    // Add React Router v7 future flags to fix the warning
+    future: {
+      v7_startTransition: true,
+    },
+  }
+);
 
-// DEV ONLY: Initialize developer tools
-if (import.meta.env.DEV && kaiTools) {
   // Log that developer tools are available
   console.debug("[DEV] KAI Tools available:", kaiTools.isAvailable());
 

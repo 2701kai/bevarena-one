@@ -9,7 +9,6 @@
     "test": "jest",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "postinstall": "node scripts/setup-devtools.js"
   },
   "type": "module",
   "dependencies": {
