@@ -35,6 +35,35 @@ import OrderMatchWelcomePage from "./pages/ordermatch/WelcomePage";
 import PropTypes from "prop-types";
 import ErrorPage from "./pages/ErrorPage";
 
+// Protected Route component with improved redirect handling
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  const { storeRedirectPath } = useRoutes();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Only redirect when not loading and not authenticated
+    if (!loading && !isAuthenticated) {
+      // Store current path for redirect after login
+      storeRedirectPath(location.pathname);
+      // Navigate to login
+      navigate("/login", { replace: true });
+    }
+  }, [
+    isAuthenticated,
+    loading,
+    location.pathname,
+    navigate,
+    storeRedirectPath,
+  ]);
+
+  if (loading) {
+    return <div className="p-8 text-center">Lade...</div>;
+  }
+
+  // If authenticated, render children
+  return isAuthenticated ? children : null;
 };
 
 ProtectedRoute.propTypes = {
@@ -238,13 +267,6 @@ const router = createBrowserRouter(
     },
   }
 );
-
-  // Log that developer tools are available
-  console.debug("[DEV] KAI Tools available:", kaiTools.isAvailable());
-
-  // Example of how to toggle the developer panel programmatically
-  // Uncomment to test: kaiTools.togglePanel();
-}
 
 export default function App() {
   return (

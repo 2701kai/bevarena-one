@@ -15,6 +15,21 @@ function DevPanelWrapper() {
   const [DevPanel, setDevPanel] = useState(null);
 
   useEffect(() => {
+    if (import.meta.env.DEV) {
+      // Dynamically import the DeveloperPanel component
+      import("../components/dev/DeveloperPanel")
+        .then((module) => {
+          setDevPanel(() => module.default);
+        })
+        .catch((err) => {
+          console.warn("Failed to load developer panel:", err);
+        });
+    }
+  }, []);
+
+  // Only render the panel if it's loaded
+  return DevPanel ? <DevPanel /> : null;
+}
 
 export default function Layout() {
   return (
@@ -53,6 +68,7 @@ export default function Layout() {
       <Footer />
 
       {/* Render the DeveloperPanel in development mode only */}
+      {import.meta.env.DEV && <DevPanelWrapper />}
     </div>
   );
 }

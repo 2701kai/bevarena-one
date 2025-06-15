@@ -1,147 +1,150 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  getLibraryHelp,
+  useContext7Available,
+} from "../../utils/devtools/kai-helper";
 
 /**
- * DeveloperPanel component
- * This component is only used in development mode and provides
- * access to development tools and Context7 functionality.
+ * DeveloperPanel - For development use only, this component is automatically
+ * removed from production builds by clean-for-client.sh
+ *
+ * This component demonstrates how to use Context7 in a component
+ * without importing it directly.
  */
 const DeveloperPanel = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [c7Available, setC7Available] = useState(false);
+  const [library, setLibrary] = useState("react");
+  const [results, setResults] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(false);
+  const panelRef = useRef(null);
 
+  // Check if Context7 is available
+  const c7Available = useContext7Available();
+
+  // Update isAvailable when Context7 status changes
   useEffect(() => {
-    // Check if Context7 is available
-    const checkC7 = () => {
-      if (window.__REMOVED && typeof window.__REMOVED.isAvailable === "function") {
-        setC7Available(window.__REMOVED.isAvailable());
-      }
-    };
+    setIsAvailable(c7Available);
+  }, [c7Available]);
 
-    // Check immediately
-    checkC7();
-
-    // Listen for Context7 availability
-    const handleC7Available = () => {
-      setC7Available(true);
-    };
-
-    // Listen for panel toggle events
-    const handleTogglePanel = () => {
-      setIsVisible((prev) => !prev);
-    };
-
-    window.addEventListener("c7:available", handleC7Available);
-    window.addEventListener("c7:toggle-panel", handleTogglePanel);
-
-    // Keyboard shortcut: Ctrl+Shift+D to toggle panel
+  // Add keyboard shortcut (Ctrl+Shift+D) to toggle panel
+  useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.shiftKey && e.code === "KeyD") {
+      // Use Ctrl+Shift+D as a more common shortcut
+      if (e.ctrlKey && e.shiftKey && e.key === "D") {
+        e.preventDefault();
+        setIsVisible((prev) => !prev);
+      }
+      // Also support Alt+7 for quick access
+      if (e.altKey && e.key === "7") {
         e.preventDefault();
         setIsVisible((prev) => !prev);
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    // Add custom event listener for toggling the panel
+    const handleTogglePanel = () => setIsVisible((prev) => !prev);
+    window.addEventListener("c7:toggle-panel", handleTogglePanel);
 
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener("c7:available", handleC7Available);
+      window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("c7:toggle-panel", handleTogglePanel);
-      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
-  if (!isVisible) {
-    return (
-      <div className="fixed bottom-4 right-4 z-50">
-        <button
-          onClick={() => setIsVisible(true)}
-          className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700"
-          title="Open Developer Panel (Ctrl+Shift+D)"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-          >
-            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-            <path d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z" />
-          </svg>
-        </button>
-      </div>
-    );
-  }
+  // Handle click outside to close panel
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const handleClickOutside = (event) => {
+      if (panelRef.current && !panelRef.current.contains(event.target)) {
+        setIsVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isVisible]);
+
+  // Handle library search
+  const handleGetHelp = async () => {
+    if (!library.trim()) return;
+
+    setIsLoading(true);
+    try {
+      const result = await getLibraryHelp(library);
+      setResults(result);
+    } catch (error) {
+      console.error("Error getting library help:", error);
+      setResults({ error: "Failed to get library help" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Hide completely if not toggled on
+  if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 right-0 w-96 h-80 bg-gray-800 text-white shadow-lg rounded-tl-lg z-50 flex flex-col">
-      <div className="flex justify-between items-center p-2 bg-gray-700 rounded-tl-lg">
-        <h3 className="font-medium">Developer Panel</h3>
-        <div className="flex space-x-2">
+    <div
+      ref={panelRef}
+      className="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg z-50 w-96 max-h-96 overflow-auto"
+    >
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Developer Tools</h3>
+        <div className="flex items-center gap-2">
           <span
-            className={`inline-block w-3 h-3 rounded-full ${c7Available ? "bg-green-500" : "bg-red-500"}`}
-            title={
-              c7Available ? "Context7 Available" : "Context7 Not Available"
-            }
-          ></span>
-          <button
-            onClick={() => setIsVisible(false)}
-            className="text-gray-400 hover:text-white"
+            className={`text-xs px-2 py-0.5 rounded ${isAvailable ? "bg-green-600" : "bg-amber-600"}`}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-            </svg>
+            {isAvailable ? "Connected" : "Mock Mode"}
+          </span>
+          <button
+            className="text-gray-400 hover:text-white"
+            onClick={() => setIsVisible(false)}
+          >
+            ✕
           </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-3 text-sm">
-        <div className="mb-4">
-          <h4 className="font-medium mb-2">Context7 Tools</h4>
-          <div className="flex flex-col space-y-2">
-            <button
-              onClick={() =>
-                window.__REMOVED
-                  ?.getLibraryHelp("react")
-                  .then((docs) => console.log("React Docs:", docs))
-              }
-              disabled={!c7Available}
-              className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Get React Docs
-            </button>
-            <button
-              onClick={() =>
-                window.__REMOVED
-                  ?.getLibraryHelp("tailwindcss")
-                  .then((docs) => console.log("Tailwind Docs:", docs))
-              }
-              disabled={!c7Available}
-              className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Get Tailwind Docs
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="font-medium mb-2">Development Info</h4>
-          <div className="bg-gray-700 p-2 rounded">
-            <p>Mode: {import.meta.env.MODE}</p>
-            <p>Dev: {import.meta.env.DEV ? "Yes" : "No"}</p>
-            <p>Context7: {c7Available ? "Available" : "Not Available"}</p>
-          </div>
-        </div>
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          value={library}
+          onChange={(e) => setLibrary(e.target.value)}
+          placeholder="Library name"
+          className="flex-1 px-3 py-2 text-black rounded"
+        />
+        <button
+          onClick={handleGetHelp}
+          disabled={isLoading}
+          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded disabled:opacity-50"
+        >
+          {isLoading ? "..." : "Get Help"}
+        </button>
       </div>
 
-      <div className="p-2 bg-gray-700 text-xs text-gray-400">
-        Press Ctrl+Shift+D to toggle this panel
+      {results && (
+        <div className="mt-4">
+          <h4 className="font-medium mb-2">Results:</h4>
+          <pre className="bg-gray-900 p-3 rounded text-sm overflow-auto">
+            {JSON.stringify(results, null, 2)}
+          </pre>
+        </div>
+      )}
+
+      <div className="mt-4 text-xs text-gray-400">
+        <div>Shortcuts:</div>
+        <div>
+          • Press <span className="font-mono">Ctrl+Shift+D</span> to toggle this
+          panel
+        </div>
+        <div>
+          • Press <span className="font-mono">Alt+7</span> for quick access
+        </div>
       </div>
     </div>
   );
