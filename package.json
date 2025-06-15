@@ -8,8 +8,7 @@
     "preview": "vite preview",
     "test": "jest",
     "lint": "eslint .",
-    "format": "prettier --write .",
-    "postinstall": "node scripts/setup-devtools.js"
+    "format": "prettier --write ."
   },
   "type": "module",
   "dependencies": {
