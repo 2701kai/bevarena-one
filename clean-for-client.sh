@@ -71,8 +71,8 @@ find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx"
     sed -i '/import.meta.env.DEV &&/d' "$file"
     sed -i '/const DeveloperPanel = import.meta.env.DEV/,/: () => null;/d' "$file"
 
-    # Remove DeveloperPanel references in JSX
-    sed -i '/{\/\* Render the DeveloperPanel/,/}\)}/d' "$file"
+    # Remove DeveloperPanel references in JSX - Fix regex escaping
+    sed -i '/{\/\* Render the DeveloperPanel/,/})/d' "$file"
     sed -i '/<React.Suspense.*DeveloperPanel/,/<\/React.Suspense>/d' "$file"
     sed -i '/{import.meta.env.DEV && <DevPanelWrapper \/>/d' "$file"
 
