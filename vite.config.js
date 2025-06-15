@@ -20,18 +20,6 @@ export default defineConfig(({ mode }) => {
       minify: true,
     },
     // Include the setup-devtools.js script in development mode
-    optimizeDeps: {
-      include: isDev ? ["./scripts/setup-devtools.js"] : [],
-    },
     // Add the setup-devtools.js script to the HTML in development mode
-    transformIndexHtml: (html) => {
-      if (!isDev) return html;
-
-      // Add the setup-devtools.js script before the closing body tag
-      return html.replace(
-        "</body>",
-        `<script type="module" src="/scripts/setup-devtools.js"></script></body>`
-      );
-    },
   };
 });

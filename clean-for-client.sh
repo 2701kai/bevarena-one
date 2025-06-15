@@ -1,35 +1,70 @@
 #!/bin/bash
 
-# clean-for-client.sh - Removes AI tool traces and development artifacts from code
-# This script is automatically called by git-clientview.sh
+#######################################
+# clean-for-client.sh - Removes development artifacts and AI tool traces from code
+#
+# This script is automatically called by git-clientview.sh but can also be run
+# manually to prepare a clean version of the codebase for client viewing.
+#
+# Author: BevArena Team
+# Version: 1.0.1
+# Tested on: Ubuntu 25.10
+#
+# Usage: ./clean-for-client.sh
+#
+# Dependencies:
+#   - find
+#   - sed
+#   - grep
+#   - rm
+#######################################
 
-echo "🧹 Cleaning repository for client viewing..."
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+# Define text colors for better readability
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${GREEN}🧹 Cleaning repository for client viewing...${NC}"
+
+#######################################
+# Remove development directories
+#######################################
 
 # Remove .cursor directory and files
 if [ -d ".cursor" ]; then
-    echo "- Removing .cursor directory"
+    echo -e "${BLUE}- Removing .cursor directory${NC}"
     rm -rf .cursor
 fi
 
+# Remove dev-notes directory
+if [ -d "dev-notes" ]; then
+    echo -e "${BLUE}- Removing dev-notes directory${NC}"
+    rm -rf dev-notes
+fi
+
+#######################################
+# Remove Context7 files and references
+#######################################
+
 # Remove any context7.json files
 find . -name "context7.json" -type f -delete
-echo "- Removed context7.json files"
+echo -e "${BLUE}- Removed context7.json files${NC}"
 
 # Remove Context7 files and references
 find . -path "*/utils/devtools/*" -type f -delete
 find . -path "*/scripts/setup-devtools.js" -type f -delete
 find . -path "*/components/dev/*" -type f -delete
 rm -f src/context/context7.js 2>/dev/null || true
-echo "- Removed Context7 files and developer tools"
+echo -e "${BLUE}- Removed Context7 files and developer tools${NC}"
 
-# Remove dev-notes directory
-if [ -d "dev-notes" ]; then
-    echo "- Removing dev-notes directory"
-    rm -rf dev-notes
-fi
+#######################################
+# Clean code files
+#######################################
 
-# Remove Claude markers and Cursor artifacts
-# Fix the find command to properly handle multiple file extensions
+# Process files with specific extensions to remove development artifacts
 find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" -o -name "*.css" -o -name "*.html" \) | while read file; do
     # Skip node_modules
     if [[ $file == *"node_modules"* ]]; then
@@ -87,19 +122,27 @@ find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx"
     fi
 done
 
+#######################################
+# Remove configuration files
+#######################################
+
 # Remove hidden files
 find . -type f -name ".*" | grep -v ".gitignore" | xargs rm -f 2>/dev/null || true
-echo "- Removed hidden files (except .gitignore)"
+echo -e "${BLUE}- Removed hidden files (except .gitignore)${NC}"
 
 # Remove specific development files
 rm -f .env* 2>/dev/null || true
 rm -f TODO.md 2>/dev/null || true
 rm -rf .vscode 2>/dev/null || true
-echo "- Removed development configuration files"
+echo -e "${BLUE}- Removed development configuration files${NC}"
+
+#######################################
+# Clean configuration files
+#######################################
 
 # Update vite.config.js
 if [ -f "vite.config.js" ]; then
-    echo "- Cleaning vite.config.js"
+    echo -e "${BLUE}- Cleaning vite.config.js${NC}"
     # Remove the Context7 plugin declaration
     sed -i '/\/\/ Create a Context7 plugin/,/^};/d' "vite.config.js"
     # Remove the plugin from the plugins array
@@ -118,7 +161,7 @@ fi
 
 # Clean up package.json
 if [ -f "package.json" ]; then
-    echo "- Cleaning package.json"
+    echo -e "${BLUE}- Cleaning package.json${NC}"
     # Remove the postinstall script
     sed -i '/"postinstall": "node scripts\/setup-devtools.js",\?/d' "package.json"
     # Remove Context7 from dependencies
@@ -128,4 +171,4 @@ if [ -f "package.json" ]; then
     sed -i 's/,\s*\}/}/' "package.json"
 fi
 
-echo "✨ Repository cleaned for client viewing!"
+echo -e "${GREEN}✨ Repository cleaned for client viewing!${NC}"
