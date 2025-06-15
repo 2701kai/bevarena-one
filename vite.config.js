@@ -15,13 +15,6 @@ const devToolsPlugin = {
       `<script>
         // Initialize Context7 keyboard shortcuts directly
         document.addEventListener("keydown", function(e) {
-          // Alt+D shortcut
-          if (e.altKey && (e.key === "d" || e.key === "D" || e.keyCode === 68)) {
-            e.preventDefault();
-            console.log("Alt+D pressed!");
-            window.dispatchEvent(new CustomEvent("c7:toggle-panel"));
-          }
-          
           // Alt+7 shortcut
           if (e.altKey && (e.key === "7" || e.keyCode === 55 || e.which === 55 || 
                          (e.key === "Numpad7" || e.keyCode === 103))) {

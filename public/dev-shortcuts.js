@@ -14,13 +14,6 @@
 
   // Add keyboard event listeners
   document.addEventListener("keydown", function (e) {
-    // Alt+D shortcut
-    if (e.altKey && (e.key === "d" || e.key === "D" || e.keyCode === 68)) {
-      e.preventDefault();
-      console.log("[DEV] Alt+D shortcut detected");
-      toggleDevPanel();
-    }
-
     // Alt+7 shortcut (including numpad)
     if (
       e.altKey &&
@@ -36,5 +29,5 @@
     }
   });
 
-  console.log("[DEV] Keyboard shortcuts initialized (Alt+D, Alt+7)");
+  console.log("[DEV] Keyboard shortcuts initialized (Alt+7)");
 })();

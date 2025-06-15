@@ -23,9 +23,7 @@ const DeveloperPanel = () => {
     window.addEventListener("c7:toggle-panel", handleTogglePanel);
 
     // Log that the panel is ready
-    console.log(
-      "[DEV] Developer panel initialized. Press Alt+D or Alt+7 to toggle."
-    );
+    console.log("[DEV] Developer panel initialized. Press Alt+7 to toggle.");
 
     // Cleanup
     return () => {
@@ -71,10 +69,6 @@ const DeveloperPanel = () => {
         <div className="mb-4">
           <h5 className="text-sm font-semibold mb-1">Keyboard Shortcuts:</h5>
           <ul className="text-xs space-y-1">
-            <li>
-              <span className="bg-gray-700 px-1 rounded">Alt+D</span> - Toggle
-              this panel
-            </li>
             <li>
               <span className="bg-gray-700 px-1 rounded">Alt+7</span> - Toggle
               this panel

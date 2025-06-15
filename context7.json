@@ -6,6 +6,6 @@
     "/tailwindlabs/tailwindcss"
   ],
   "keyboardShortcuts": {
-    "togglePanel": ["Alt+D", "Alt+7"]
+    "togglePanel": ["Alt+7"]
   }
 }
