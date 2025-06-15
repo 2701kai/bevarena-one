@@ -35,8 +35,8 @@ const DeveloperPanel = () => {
         e.preventDefault();
         setIsVisible((prev) => !prev);
       }
-      // Also support Alt+7 for quick access
-      if (e.altKey && e.key === "7") {
+      // Also support Alt+7 for quick access (using keyCode for better compatibility)
+      if (e.altKey && (e.key === "7" || e.keyCode === 55 || e.which === 55)) {
         e.preventDefault();
         setIsVisible((prev) => !prev);
       }

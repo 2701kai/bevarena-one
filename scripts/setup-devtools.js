@@ -39,12 +39,14 @@ if (typeof window !== "undefined") {
   // Log that developer tools are initialized
   console.debug("[DEV] Context7 integration initialized");
 
-  // Add keyboard shortcuts
+  // Add keyboard shortcuts for global access
   document.addEventListener("keydown", (e) => {
-    // Alt+7 shortcut to toggle Context7 panel
-    if (e.altKey && e.key === "7") {
+    // Alt+7 shortcut to toggle Context7 panel (using both key and keyCode for compatibility)
+    if (e.altKey && (e.key === "7" || e.keyCode === 55 || e.which === 55)) {
       e.preventDefault();
-      window.__context7.togglePanel();
+      // Dispatch the custom event instead of directly calling togglePanel
+      // This ensures the DeveloperPanel component handles the toggle
+      window.dispatchEvent(new CustomEvent("c7:toggle-panel"));
     }
   });
 }
