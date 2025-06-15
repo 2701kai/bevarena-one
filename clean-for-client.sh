@@ -28,7 +28,7 @@ if [ -d "dev-notes" ]; then
 fi
 
 # Remove Claude markers and Cursor artifacts
-find . -type f -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" -o -name "*.css" -o -name "*.html" | while read file; do
+find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" -o -name "*.css" -o -name "*.html" \) | while read file; do
     # Skip node_modules
     if [[ $file == *"node_modules"* ]]; then
         continue
