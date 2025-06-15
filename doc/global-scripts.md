@@ -7,7 +7,8 @@ This document explains how to set up and use the global scripts for the BevArena
 The BevArena project includes several scripts that can be set up globally for convenient access:
 
 1. **git-clientview** - Updates the client repository with cleaned code
-2. **commit-from-doc** - Generates structured Git commit messages from documentation
+2. **clean-for-client.sh** - Cleans the codebase for client viewing
+3. **commit-from-doc** - Generates structured Git commit messages from markdown files
 
 ## Setting Up git-clientview
 
@@ -22,7 +23,7 @@ The `git-clientview` script allows you to update the client repository with a cl
 mkdir -p ~/bin
 
 # Copy the script
-cp /home/pazzo/Desktop/BEVARENA/git-clientview.sh ~/bin/git-clientview
+cp /home/pazzo/Desktop/BEVARENA/industarena/clone-industryarena/git-clientview.sh ~/bin/git-clientview
 
 # Make it executable
 chmod +x ~/bin/git-clientview
@@ -67,11 +68,14 @@ The `git-clientview` script:
 3. Merges changes from your main branch
 4. Runs the `clean-for-client.sh` script to remove development artifacts
 5. Commits and pushes the cleaned code to the client repository
-6. Switches back to your original branch
+6. Switches back to the main branch
+7. Merges client-view back to main to restore any modified files
+8. Deletes the temporary client-view branch
+9. Pushes the restored main branch to the development repository
 
-## Setting Up commit-from-doc
+## Setting Up clean-for-client.sh
 
-The `commit-from-doc` script helps generate structured Git commit messages from documentation.
+The `clean-for-client.sh` script helps remove development artifacts from the codebase.
 
 ### Installation
 
@@ -79,7 +83,44 @@ The `commit-from-doc` script helps generate structured Git commit messages from 
 
 ```bash
 # Copy the script
-cp /home/pazzo/Desktop/BEVARENA/doc/commit-from-doc/commit-from-doc-global.sh ~/bin/commit-from-doc
+cp /home/pazzo/Desktop/BEVARENA/industarena/clone-industryarena/clean-for-client.sh ~/bin/clean-for-client
+
+# Make it executable
+chmod +x ~/bin/clean-for-client
+```
+
+2. Add the bin directory to your PATH (if not already added):
+
+```bash
+# Add this line to your ~/.bashrc or ~/.zshrc
+export PATH="$HOME/bin:$PATH"
+
+# Then reload your shell configuration
+source ~/.bashrc  # or source ~/.zshrc
+```
+
+### Usage
+
+You can use the script directly:
+
+```bash
+# As a standalone command
+clean-for-client
+```
+
+However, it's typically run automatically as part of the `git-clientview` workflow.
+
+## Setting Up commit-from-doc
+
+The `commit-from-doc` script helps generate structured Git commit messages from markdown files.
+
+### Installation
+
+1. Copy the script to your bin directory:
+
+```bash
+# Copy the script
+cp /home/pazzo/Desktop/BEVARENA/doc/commit-from-doc/commit-from-doc.sh ~/bin/commit-from-doc
 
 # Make it executable
 chmod +x ~/bin/commit-from-doc
@@ -107,13 +148,39 @@ You can use the script in two ways:
 
 ```bash
 # As a standalone command
-commit-from-doc path/to/document.md "section-title"
+commit-from-doc -f path/to/document.md -t feat -s auth
 
 # As a git alias (if set up)
-git doccommit path/to/document.md "section-title"
+git doccommit -f path/to/document.md -t feat -s auth
 ```
 
-For more details, see the [Commit From Doc documentation](commit-from-doc/commit-from-doc.md).
+Without any parameters, the script will run in interactive mode:
+
+```bash
+commit-from-doc
+```
+
+This will:
+
+1. Show a list of recently modified markdown files
+2. Let you select a file from the list
+3. Prompt for commit type and scope
+4. Generate a structured commit message
+5. Allow you to edit the message
+6. Commit the changes
+
+## Repository Configuration
+
+The scripts are configured to work with the following repositories:
+
+1. **Development Repository**:
+
+   - Path: `/home/pazzo/Desktop/BEVARENA/industarena/clone-industryarena`
+   - Remote: https://github.com/2701kai/dev-bevarena-one.git
+
+2. **Client Repository**:
+   - Path: `/home/pazzo/Desktop/BEVARENA/CLIENTVIEW/dev-bevarena-one`
+   - Remote: https://github.com/2701kai/bevarena-one.git
 
 ## Troubleshooting
 
@@ -123,14 +190,14 @@ If you encounter issues with the global scripts:
 
    ```bash
    which git-clientview
-   which commit-from-doc
+   which clean-for-client
    ```
 
 2. **Permission denied**: Make sure the script is executable
 
    ```bash
    chmod +x ~/bin/git-clientview
-   chmod +x ~/bin/commit-from-doc
+   chmod +x ~/bin/clean-for-client
    ```
 
 3. **PATH not updated**: Make sure your PATH includes your bin directory
@@ -140,7 +207,19 @@ If you encounter issues with the global scripts:
    ```
 
 4. **Git alias not working**: Verify the alias is set up correctly
+
    ```bash
    git config --global --get alias.clientview
-   git config --global --get alias.doccommit
    ```
+
+5. **Script fails**: Check that both repositories are accessible and properly configured
+   ```bash
+   # From the development repository
+   git remote -v
+   ```
+
+## Related Documentation
+
+- [Git Client View Script](git-clientview.md) - Detailed documentation for the git-clientview script
+- [Clean for Client Script](clean-for-client.md) - Documentation for the cleaning script
+- [Repository Workflow](repository-workflow.md) - Overview of the dual repository workflow
